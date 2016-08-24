@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +23,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // mock data:
         String[] forecastArray = new String[]{
                 "Today - Sunny - 88 / 63",
                 "Tomorrow - Sunny - 88 / 63",
@@ -33,7 +36,15 @@ public class MainActivityFragment extends Fragment {
 
         List<String> forecastList = Arrays.asList( forecastArray );
 
+        // inflating view:
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        // set adapter:
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.textview_forecast, forecastList);
+
+        ListView listView = (ListView) view.findViewById(R.id.listview_forecast);
+        listView.setAdapter(arrayAdapter);
+
+        return view;
     }
 }
