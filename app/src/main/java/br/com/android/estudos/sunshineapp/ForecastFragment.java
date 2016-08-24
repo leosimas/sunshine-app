@@ -34,6 +34,7 @@ public class ForecastFragment extends Fragment {
 
     private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ArrayAdapter<String> arrayAdapter;
+    private List<String> forecastList;
 
     public ForecastFragment() {
     }
@@ -60,7 +61,7 @@ public class ForecastFragment extends Fragment {
                 "Last one - Sunny - 88 / 63"
         };
 
-        ArrayList<String> forecastList = new ArrayList<>(Arrays.asList(forecastArray));
+        forecastList = new ArrayList<>( Arrays.asList( forecastArray ) );
 
         // inflating view:
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
@@ -188,12 +189,10 @@ public class ForecastFragment extends Fragment {
                 Log.e(LOG_TAG, "no data");
                 return;
             }
-            arrayAdapter.clear();
-            for (String s :
-                    strings) {
-                arrayAdapter.add(s);
-            }
+            forecastList.clear();
+            forecastList.addAll( Arrays.asList(strings) );
 
+            arrayAdapter.notifyDataSetChanged();
         }
     }
 }
