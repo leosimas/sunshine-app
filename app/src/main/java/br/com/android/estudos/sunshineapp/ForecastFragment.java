@@ -1,5 +1,6 @@
 package br.com.android.estudos.sunshineapp;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -79,7 +80,7 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("http://api.openweathermap.org/data/2.5/forecast/daily?appid=e97690e93a6a314bcd82b2c6bc489e42&mode=json&units=metric&cnt=7&q=Salvador,br");
+            new FetchWeatherTask().execute("Salvador,br");
             return true;
         }
 
@@ -89,7 +90,7 @@ public class ForecastFragment extends Fragment {
     public class FetchWeatherTask extends AsyncTask<String, Void, String> {
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected String doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -102,7 +103,22 @@ public class ForecastFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(urls[0]);
+
+                Uri uri = new Uri.Builder()
+                        .scheme("http")
+                        .authority("api.openweathermap.org")
+                        .appendEncodedPath( "data/2.5/forecast/daily" )
+                        .appendQueryParameter("appid", "e97690e93a6a314bcd82b2c6bc489e42")
+                        .appendQueryParameter("mode", "json")
+                        .appendQueryParameter("units", "metric")
+                        .appendQueryParameter("q", params[0])
+                        .build();
+
+                String builtUrl = uri.toString();
+
+                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
+
+                URL url = new URL( builtUrl );
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -131,6 +147,8 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
+
+                Log.v(LOG_TAG, forecastJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
