@@ -1,7 +1,6 @@
 package br.com.android.estudos.sunshineapp;
 
 import android.text.format.Time;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +13,7 @@ import java.text.SimpleDateFormat;
  */
 public class WeatherDataParser {
 
-    private static final String LOG_TAG = WeatherDataParser.class.getSimpleName();
+//    private static final String LOG_TAG = WeatherDataParser.class.getSimpleName();
     private static SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
 
     /**
@@ -23,17 +22,17 @@ public class WeatherDataParser {
      * retrieve the maximum temperature for the day indicated by dayIndex
      * (Note: 0-indexed, so 0 would refer to the first day).
      */
-    private static double getMaxTemperatureForDay(String weatherJsonStr, int dayIndex)
-            throws JSONException {
-
-        JSONObject jsonObj = new JSONObject( weatherJsonStr );
-        double max = jsonObj.getJSONArray("list")
-                .getJSONObject(dayIndex)
-                    .getJSONObject("temp")
-                        .getDouble("max");
-
-        return max;
-    }
+//    private static double getMaxTemperatureForDay(String weatherJsonStr, int dayIndex)
+//            throws JSONException {
+//
+//        JSONObject jsonObj = new JSONObject( weatherJsonStr );
+//        double max = jsonObj.getJSONArray("list")
+//                .getJSONObject(dayIndex)
+//                    .getJSONObject("temp")
+//                        .getDouble("max");
+//
+//        return max;
+//    }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
          * so for convenience we're breaking it out into its own method now.
@@ -127,9 +126,9 @@ public class WeatherDataParser {
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
-        for (String s : resultStrs) {
-            Log.v(LOG_TAG, "Forecast entry: " + s);
-        }
+//        for (String s : resultStrs) {
+//            Log.v(LOG_TAG, "Forecast entry: " + s);
+//        }
 
         return resultStrs;
     }

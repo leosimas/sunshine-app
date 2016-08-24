@@ -2,9 +2,9 @@ package br.com.android.estudos.sunshineapp;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,12 +15,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +33,8 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
+    private ArrayAdapter<String> arrayAdapter;
+    private List<String> forecastList;
 
     public ForecastFragment() {
     }
@@ -56,13 +61,13 @@ public class ForecastFragment extends Fragment {
                 "Last one - Sunny - 88 / 63"
         };
 
-        List<String> forecastList = Arrays.asList( forecastArray );
+        forecastList = new ArrayList<>( Arrays.asList( forecastArray ) );
 
         // inflating view:
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
 
         // set adapter:
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.textview_forecast, forecastList);
+        arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.textview_forecast, forecastList);
 
         ListView listView = (ListView) view.findViewById(R.id.listview_forecast);
         listView.setAdapter(arrayAdapter);
@@ -96,7 +101,7 @@ public class ForecastFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-
+            String forecastJsonStr = null;
             String result[] = null;
             try {
                 // Construct the URL for the OpenWeatherMap query
@@ -115,7 +120,7 @@ public class ForecastFragment extends Fragment {
 
                 String builtUrl = uri.toString();
 
-                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
+//                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
 
                 URL url = new URL( builtUrl );
 
@@ -145,12 +150,10 @@ public class ForecastFragment extends Fragment {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
-                String forecastJsonStr = buffer.toString();
+                forecastJsonStr = buffer.toString();
                 Log.v(LOG_TAG, forecastJsonStr);
 
-                result = WeatherDataParser.getWeatherDataFromJson(forecastJsonStr);
-
-            } catch (Exception e) {
+            } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
@@ -166,9 +169,26 @@ public class ForecastFragment extends Fragment {
                         Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
+
+                if ( forecastJsonStr != null ) {
+                    try {
+                        result = WeatherDataParser.getWeatherDataFromJson(forecastJsonStr);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
 
             return result;
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            forecastList.clear();
+            forecastList.addAll( Arrays.asList(strings) );
+
+            arrayAdapter.notifyDataSetChanged();
         }
     }
 }
