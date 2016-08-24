@@ -79,7 +79,7 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7");
+            new FetchWeatherTask().execute("http://api.openweathermap.org/data/2.5/forecast/daily?appid=e97690e93a6a314bcd82b2c6bc489e42&mode=json&units=metric&cnt=7&q=Salvador,br");
             return true;
         }
 
