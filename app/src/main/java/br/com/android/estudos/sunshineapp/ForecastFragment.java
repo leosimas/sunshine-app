@@ -34,7 +34,6 @@ public class ForecastFragment extends Fragment {
 
     private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ArrayAdapter<String> arrayAdapter;
-    private List<String> forecastList;
 
     public ForecastFragment() {
     }
@@ -61,7 +60,7 @@ public class ForecastFragment extends Fragment {
                 "Last one - Sunny - 88 / 63"
         };
 
-        forecastList = new ArrayList<>( Arrays.asList( forecastArray ) );
+        ArrayList<String> forecastList = new ArrayList<>(Arrays.asList(forecastArray));
 
         // inflating view:
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
@@ -120,7 +119,7 @@ public class ForecastFragment extends Fragment {
 
                 String builtUrl = uri.toString();
 
-//                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
+                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
 
                 URL url = new URL( builtUrl );
 
@@ -185,10 +184,16 @@ public class ForecastFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] strings) {
-            forecastList.clear();
-            forecastList.addAll( Arrays.asList(strings) );
+            if (strings == null) {
+                Log.e(LOG_TAG, "no data");
+                return;
+            }
+            arrayAdapter.clear();
+            for (String s :
+                    strings) {
+                arrayAdapter.add(s);
+            }
 
-            arrayAdapter.notifyDataSetChanged();
         }
     }
 }

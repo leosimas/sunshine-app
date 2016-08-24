@@ -1,6 +1,7 @@
 package br.com.android.estudos.sunshineapp;
 
 import android.text.format.Time;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +14,8 @@ import java.text.SimpleDateFormat;
  */
 public class WeatherDataParser {
 
-//    private static final String LOG_TAG = WeatherDataParser.class.getSimpleName();
+    private static final String LOG_TAG = WeatherDataParser.class.getSimpleName();
+    //    private static final String LOG_TAG = WeatherDataParser.class.getSimpleName();
     private static SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
 
     /**
@@ -125,10 +127,6 @@ public class WeatherDataParser {
             highAndLow = formatHighLows(high, low);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
-
-//        for (String s : resultStrs) {
-//            Log.v(LOG_TAG, "Forecast entry: " + s);
-//        }
 
         return resultStrs;
     }
