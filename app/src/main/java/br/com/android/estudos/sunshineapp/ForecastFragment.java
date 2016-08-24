@@ -87,18 +87,17 @@ public class ForecastFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, String> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            // Will contain the raw JSON response as a string.
-            String forecastJsonStr = null;
 
+            String result[] = null;
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
@@ -146,10 +145,12 @@ public class ForecastFragment extends Fragment {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
-                forecastJsonStr = buffer.toString();
-
+                String forecastJsonStr = buffer.toString();
                 Log.v(LOG_TAG, forecastJsonStr);
-            } catch (IOException e) {
+
+                result = WeatherDataParser.getWeatherDataFromJson(forecastJsonStr);
+
+            } catch (Exception e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
@@ -167,7 +168,7 @@ public class ForecastFragment extends Fragment {
                 }
             }
 
-            return forecastJsonStr;
+            return result;
         }
     }
 }
