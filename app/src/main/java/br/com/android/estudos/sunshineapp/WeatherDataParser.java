@@ -1,5 +1,8 @@
 package br.com.android.estudos.sunshineapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -18,24 +21,6 @@ public class WeatherDataParser {
     //    private static final String LOG_TAG = WeatherDataParser.class.getSimpleName();
     private static SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
 
-    /**
-     * Given a string of the form returned by the api call:
-     * http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7
-     * retrieve the maximum temperature for the day indicated by dayIndex
-     * (Note: 0-indexed, so 0 would refer to the first day).
-     */
-//    private static double getMaxTemperatureForDay(String weatherJsonStr, int dayIndex)
-//            throws JSONException {
-//
-//        JSONObject jsonObj = new JSONObject( weatherJsonStr );
-//        double max = jsonObj.getJSONArray("list")
-//                .getJSONObject(dayIndex)
-//                    .getJSONObject("temp")
-//                        .getDouble("max");
-//
-//        return max;
-//    }
-
     /* The date/time conversion code is going to be moved outside the asynctask later,
          * so for convenience we're breaking it out into its own method now.
          */
@@ -48,7 +33,12 @@ public class WeatherDataParser {
     /**
      * Prepare the weather high/lows for presentation.
      */
-    private static String formatHighLows(double high, double low) {
+    private static String formatHighLows(double high, double low, boolean isImperialUnit) {
+        if ( isImperialUnit ) {
+            high = high * 1.8 + 32;
+            low = low * 1.8 + 32;
+        }
+
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
@@ -64,7 +54,7 @@ public class WeatherDataParser {
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
-    public static String[] getWeatherDataFromJson(String forecastJsonStr)
+    public static String[] getWeatherDataFromJson(Context context, String forecastJsonStr)
             throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
@@ -95,8 +85,16 @@ public class WeatherDataParser {
         // now we work exclusively in UTC
         dayTime = new Time();
 
+
         final int numDays = weatherArray.length();
         String[] resultStrs = new String[numDays];
+
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        final String metricValue = context.getString(R.string.pref_unit_metric);
+        final String unitType = sharedPreferences.getString(context.getString(R.string.pref_units_key), metricValue);
+        final boolean isImperialUnit = ! metricValue.equals( unitType );
+
         for(int i = 0; i < numDays; i++) {
             // For now, using the format "Day, description, hi/low"
             String day;
@@ -124,7 +122,7 @@ public class WeatherDataParser {
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
 
-            highAndLow = formatHighLows(high, low);
+            highAndLow = formatHighLows(high, low, isImperialUnit);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
