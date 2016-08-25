@@ -21,6 +21,7 @@
     <string name="unit_imperial">Imperial</string>
     <string name="action_view_map">View location</string>
     <string name="error_map_intent_not_found">Can\'t find a map application</string>
+    <string name="action_share">Share</string>
 
     <string-array name="pref_units_options">
         <item>@string/unit_metric</item>

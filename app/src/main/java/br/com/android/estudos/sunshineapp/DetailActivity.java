@@ -21,15 +21,6 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final Intent intent = this.getIntent();
-        if (intent != null) {
-            final String forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
-            if (forecastStr != null) {
-                TextView textView = (TextView) this.findViewById(R.id.textView);
-                textView.setText( forecastStr );
-            }
-        }
-
     }
 
 }
