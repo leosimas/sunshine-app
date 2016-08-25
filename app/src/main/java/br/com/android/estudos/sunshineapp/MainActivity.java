@@ -39,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_view_map:
                 final String location = SharedPrefs.getLocationPreference(this);
 
-                Uri uri = Uri.parse( "geo:0,0?q=" + TextUtils.htmlEncode( location ) );
+                Uri uri = Uri.parse( "geo:0,0").buildUpon()
+                        .appendQueryParameter("q", location)
+                        .build();
+
                 Intent intent = new Intent( Intent.ACTION_VIEW );
                 intent.setData( uri );
 
