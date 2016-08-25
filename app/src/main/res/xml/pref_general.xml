@@ -9,7 +9,12 @@
         android:singleLine="true"
         />
 
-    <!--<ListPreference-->
-        <!--/>-->
+    <ListPreference
+        android:key="@string/pref_temperature_key"
+        android:title="@string/pref_temperature_title"
+        android:entries="@array/pref_temperature_units"
+        android:entryValues="@array/pref_temperature_values"
+        />
+    <!-- TODO missing default value for this list -->
 
 </PreferenceScreen>

@@ -11,4 +11,17 @@
 
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_detault" translatable="false">Salvador,br</string>
+    <string name="pref_temperature_key" translatable="false">temperature</string>
+    <string name="pref_temperature_title">Temperature unit</string>
+
+    <string-array name="pref_temperature_units">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+
+    <string-array name="pref_temperature_values">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
 </resources>
