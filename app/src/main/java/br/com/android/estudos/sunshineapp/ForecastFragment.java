@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -101,16 +103,35 @@ public class ForecastFragment extends Fragment {
             case R.id.action_settings:
                 this.startActivity( new Intent(getActivity(), SettingsActivity.class) );
                 return true;
+
+            case R.id.action_view_map:
+                final String location = getLocationPreference();
+
+                Uri uri = Uri.parse( "geo:0,0?q=" + TextUtils.htmlEncode( location ) );
+                Intent intent = new Intent( Intent.ACTION_VIEW );
+                intent.setData( uri );
+
+                if ( intent.resolveActivity( getActivity().getPackageManager() ) != null ) {
+                    this.startActivity(intent);
+                } else {
+                    final String errorMsg = getString( R.string.error_map_intent_not_found );
+                    Toast.makeText(ForecastFragment.this.getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void updateWeather() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final String location = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_detault));
-
+        final String location = getLocationPreference();
         new FetchWeatherTask().execute( location );
+    }
+
+    private String getLocationPreference() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_detault));
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -141,7 +162,7 @@ public class ForecastFragment extends Fragment {
 
                 String builtUrl = uri.toString();
 
-                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
+//                Log.v(LOG_TAG, "builtUrl = " + builtUrl);
 
                 URL url = new URL( builtUrl );
 
@@ -172,7 +193,7 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
-                Log.v(LOG_TAG, forecastJsonStr);
+//                Log.v(LOG_TAG, forecastJsonStr);
 
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
