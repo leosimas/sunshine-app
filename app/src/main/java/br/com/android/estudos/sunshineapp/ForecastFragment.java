@@ -105,7 +105,7 @@ public class ForecastFragment extends Fragment {
                 return true;
 
             case R.id.action_view_map:
-                final String location = getLocationPreference();
+                final String location = SharedPrefs.getLocationPreference(getActivity());
 
                 Uri uri = Uri.parse( "geo:0,0?q=" + TextUtils.htmlEncode( location ) );
                 Intent intent = new Intent( Intent.ACTION_VIEW );
@@ -125,13 +125,8 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        final String location = getLocationPreference();
+        final String location = SharedPrefs.getLocationPreference(getActivity());
         new FetchWeatherTask().execute( location );
-    }
-
-    private String getLocationPreference() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_detault));
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
