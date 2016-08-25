@@ -95,11 +95,15 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        final int id = item.getItemId();
+        switch (id) {
+            case R.id.action_refresh:
+                new FetchWeatherTask().execute("Salvador,br");
+                return true;
 
-        if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("Salvador,br");
-            return true;
+            case R.id.action_settings:
+                this.startActivity( new Intent(getActivity(), SettingsActivity.class) );
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
