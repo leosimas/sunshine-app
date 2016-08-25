@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -55,18 +54,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // mock data:
-        final String[] forecastArray = new String[]{
-                "Today - Sunny - 88 / 63",
-                "Tomorrow - Sunny - 88 / 63",
-                "After Tomorrow - Sunny - 88 / 63",
-                "After 3  - Sunny - 88 / 63",
-                "After 4 - Sunny - 88 / 63",
-                "After 5 - Sunny - 88 / 63",
-                "Last one - Sunny - 88 / 63"
-        };
-
-        forecastList = new ArrayList<>( Arrays.asList( forecastArray ) );
+        forecastList = new ArrayList<>();
 
         // inflating view:
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
@@ -91,6 +79,13 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        this.updateWeather();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecast_fragment, menu);
     }
@@ -100,10 +95,7 @@ public class ForecastFragment extends Fragment {
         final int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                final String location = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_detault));
-
-                new FetchWeatherTask().execute( location );
+                this.updateWeather();
                 return true;
 
             case R.id.action_settings:
@@ -112,6 +104,13 @@ public class ForecastFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String location = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_detault));
+
+        new FetchWeatherTask().execute( location );
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -153,7 +152,7 @@ public class ForecastFragment extends Fragment {
 
                 // Read the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 if (inputStream == null) {
                     // Nothing to do.
                     return null;
