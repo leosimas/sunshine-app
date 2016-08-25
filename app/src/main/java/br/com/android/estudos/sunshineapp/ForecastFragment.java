@@ -1,9 +1,11 @@
 package br.com.android.estudos.sunshineapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -98,7 +100,10 @@ public class ForecastFragment extends Fragment {
         final int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                new FetchWeatherTask().execute("Salvador,br");
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                final String location = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_detault));
+
+                new FetchWeatherTask().execute( location );
                 return true;
 
             case R.id.action_settings:
