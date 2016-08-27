@@ -38,6 +38,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.android.estudos.sunshineapp.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="br.com.android.estudos.sunshineapp"
+            android:name=".data.WeatherProvider" />
+
     </application>
 
 </manifest>
