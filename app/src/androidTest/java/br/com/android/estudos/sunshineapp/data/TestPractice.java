@@ -16,7 +16,7 @@ public class TestPractice extends AndroidTestCase {
 
     public void testThatDemonstratesAssertions() throws Throwable {
         int a = 5;
-        int b = 3;
+        int b = 2003;
         int c = 5;
         int d = 10;
 
