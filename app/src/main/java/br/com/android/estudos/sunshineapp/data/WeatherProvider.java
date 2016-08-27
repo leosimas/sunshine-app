@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+import br.com.android.estudos.sunshineapp.data.WeatherContract.LocationEntry;
 import br.com.android.estudos.sunshineapp.data.WeatherContract.WeatherEntry;
 
 public class WeatherProvider extends ContentProvider {
@@ -46,28 +47,28 @@ public class WeatherProvider extends ContentProvider {
         //weather INNER JOIN location ON weather.location_id = location._id
         sWeatherByLocationSettingQueryBuilder.setTables(
                 WeatherEntry.TABLE_NAME + " INNER JOIN " +
-                        WeatherContract.LocationEntry.TABLE_NAME +
+                        LocationEntry.TABLE_NAME +
                         " ON " + WeatherEntry.TABLE_NAME +
                         "." + WeatherEntry.COLUMN_LOC_KEY +
-                        " = " + WeatherContract.LocationEntry.TABLE_NAME +
-                        "." + WeatherContract.LocationEntry._ID);
+                        " = " + LocationEntry.TABLE_NAME +
+                        "." + LocationEntry._ID);
     }
 
     //location.location_setting = ?
     private static final String sLocationSettingSelection =
-            WeatherContract.LocationEntry.TABLE_NAME+
-                    "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? ";
+            LocationEntry.TABLE_NAME+
+                    "." + LocationEntry.COLUMN_LOCATION_SETTING + " = ? ";
 
     //location.location_setting = ? AND date >= ?
     private static final String sLocationSettingWithStartDateSelection =
-            WeatherContract.LocationEntry.TABLE_NAME+
-                    "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+            LocationEntry.TABLE_NAME+
+                    "." + LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
                     WeatherEntry.COLUMN_DATE + " >= ? ";
 
     //location.location_setting = ? AND date = ?
     private static final String sLocationSettingAndDaySelection =
-            WeatherContract.LocationEntry.TABLE_NAME +
-                    "." + WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+            LocationEntry.TABLE_NAME +
+                    "." + LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
                     WeatherEntry.COLUMN_DATE + " = ? ";
 
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
@@ -164,7 +165,7 @@ public class WeatherProvider extends ContentProvider {
             case WEATHER:
                 return WeatherEntry.CONTENT_TYPE;
             case LOCATION:
-                return WeatherContract.LocationEntry.CONTENT_TYPE;
+                return LocationEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -203,7 +204,7 @@ public class WeatherProvider extends ContentProvider {
             // "location"
             case LOCATION: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        WeatherContract.LocationEntry.TABLE_NAME,
+                        LocationEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -239,10 +240,20 @@ public class WeatherProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case LOCATION: {
+                long _id = db.insert(LocationEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = LocationEntry.buildLocationUri(_id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
+        db.close();
         return returnUri;
     }
 
