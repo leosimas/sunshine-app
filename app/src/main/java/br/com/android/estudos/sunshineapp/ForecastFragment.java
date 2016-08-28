@@ -34,6 +34,8 @@ public class ForecastFragment extends Fragment {
     private static final int LOADER_ID = 100;
     private ForecastAdapter mForecastAdapter;
 
+
+
     public ForecastFragment() {
     }
 
@@ -95,7 +97,7 @@ public class ForecastFragment extends Fragment {
 
                         return new CursorLoader(getActivity(),
                                 weatherForLocationUri,
-                                null,
+                                ForecastAdapter.FORECAST_COLUMNS,
                                 null,
                                 null,
                                 sortOrder);
