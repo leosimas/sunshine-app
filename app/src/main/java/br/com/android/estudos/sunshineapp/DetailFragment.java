@@ -69,7 +69,7 @@ public class DetailFragment extends Fragment {
 
         final Intent intent = this.getActivity().getIntent();
         if (intent != null) {
-            forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
+            forecastStr = intent.getDataString();
             if (forecastStr != null) {
                 TextView textView = (TextView) rootView.findViewById(R.id.textView);
                 textView.setText( forecastStr );
