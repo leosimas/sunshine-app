@@ -128,8 +128,8 @@ public class DetailFragment extends Fragment {
                 String description = cursor.getString(COL_WEATHER_DESC);
 
                 boolean isMetric = Utility.isMetric(getActivity());
-                String high = Utility.formatTemperature( cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric );
-                String low = Utility.formatTemperature( cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric );
+                String high = Utility.formatTemperature( getActivity(), cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric );
+                String low = Utility.formatTemperature( getActivity(), cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric );
 
                 forecastString = String.format("%s - %s - %s/%s", dateStr, description, high, low);
                 textView.setText( forecastString );
