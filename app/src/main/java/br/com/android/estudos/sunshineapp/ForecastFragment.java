@@ -64,6 +64,36 @@ public class ForecastFragment extends Fragment {
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
 
+    private LoaderManager.LoaderCallbacks<Cursor> mLoaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            // set adapter:
+            String locationSetting = Utility.getPreferredLocation(getActivity());
+
+            // Sort order:  Ascending, by date.
+            String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+            Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
+                    locationSetting, System.currentTimeMillis());
+
+            return new CursorLoader(getActivity(),
+                    weatherForLocationUri,
+                    FORECAST_COLUMNS,
+                    null,
+                    null,
+                    sortOrder);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            mForecastAdapter.swapCursor(data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            mForecastAdapter.swapCursor(null);
+        }
+    };
+
     public ForecastFragment() {
     }
 
@@ -116,36 +146,7 @@ public class ForecastFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getActivity().getSupportLoaderManager().initLoader(
-                LOADER_ID, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-                    @Override
-                    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-                        // set adapter:
-                        String locationSetting = Utility.getPreferredLocation(getActivity());
-
-                        // Sort order:  Ascending, by date.
-                        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-                        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
-                                locationSetting, System.currentTimeMillis());
-
-                        return new CursorLoader(getActivity(),
-                                weatherForLocationUri,
-                                FORECAST_COLUMNS,
-                                null,
-                                null,
-                                sortOrder);
-                    }
-
-                    @Override
-                    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-                        mForecastAdapter.swapCursor(data);
-                    }
-
-                    @Override
-                    public void onLoaderReset(Loader<Cursor> loader) {
-                        mForecastAdapter.swapCursor(null);
-                    }
-                });
+        getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, mLoaderCallbacks);
     }
 
     @Override
@@ -166,7 +167,7 @@ public class ForecastFragment extends Fragment {
                 return true;
 
             case R.id.action_view_map:
-                final String location = SharedPrefs.getLocationPreference(getActivity());
+                final String location = Utility.getPreferredLocation(getActivity());
 
                 Uri uri = Uri.parse( "geo:0,0?q=" + TextUtils.htmlEncode( location ) );
                 Intent intent = new Intent( Intent.ACTION_VIEW );
@@ -186,8 +187,13 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        final String location = SharedPrefs.getLocationPreference(getActivity());
+        final String location = Utility.getPreferredLocation(getActivity());
         new FetchWeatherTask(getActivity()).execute( location );
+    }
+
+    public void onLocationChanged() {
+        this.updateWeather();
+        getLoaderManager().restartLoader(LOADER_ID, null, mLoaderCallbacks);
     }
 
 }
