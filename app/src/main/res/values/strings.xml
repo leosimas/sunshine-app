@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Sunshine App</string>
 
     <string name="action_refresh">Refresh</string>
@@ -32,5 +32,14 @@
         <item>@string/pref_unit_metric</item>
         <item>@string/pref_unit_imperial</item>
     </string-array>
+
+    <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
+    <string name="today">Today</string>
+
+    <!-- Date label when displaying tomorrow's weather forecast [CHAR LIMIT=20] -->
+    <string name="tomorrow">Tomorrow</string>
+
+    <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
+    <string name="format_full_friendly_date"><xliff:g id="day">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g></string>
 
 </resources>

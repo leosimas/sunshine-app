@@ -32,7 +32,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
              />
 
         <TextView
@@ -41,7 +40,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
             />
 
     </LinearLayout>
@@ -58,7 +56,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="28"
              />
 
         <TextView
@@ -67,7 +64,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="22"
             />
 
     </LinearLayout>
