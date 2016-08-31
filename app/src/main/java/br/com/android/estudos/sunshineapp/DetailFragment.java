@@ -133,14 +133,12 @@ public class DetailFragment extends Fragment {
             @Override
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
                 final Intent intent = getActivity().getIntent();
-                if (intent == null) {
+                if (intent == null || intent.getData() == null) {
                     return null;
                 }
 
-                String uriString = intent.getDataString();
-
                 return new CursorLoader(getActivity(),
-                        Uri.parse(uriString),
+                        intent.getData(),
                         DETAIL_COLUMNS,
                         null,
                         null,

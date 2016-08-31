@@ -15,9 +15,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private static final String FORECASTFRAGMENT_TAG = "FORECASTFRAGMENT_TAG";
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     private String mLocation;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,45 +29,36 @@ public class MainActivity extends AppCompatActivity {
 
         mLocation = Utility.getPreferredLocation( this );
 
-        Log.v(LOG_TAG, "onCreate");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.v(LOG_TAG, "onStart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.v(LOG_TAG, "onResume");
-
-        final String preferredLocation = Utility.getPreferredLocation(this);
-        if ( ! mLocation.equals( preferredLocation ) ) {
-            ForecastFragment forecastFragment = (ForecastFragment) this.getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
-            forecastFragment.onLocationChanged();
-            mLocation = preferredLocation;
+        if (findViewById(R.id.weather_detail_container) != null) {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
         }
 
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v(LOG_TAG, "onPause");
-    }
+    protected void onResume() {
+        super.onResume();
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.v(LOG_TAG, "onStop");
-    }
+        final String preferredLocation = Utility.getPreferredLocation(this);
+        if ( ! mLocation.equals( preferredLocation ) ) {
+            ForecastFragment forecastFragment = (ForecastFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+            forecastFragment.onLocationChanged();
+            mLocation = preferredLocation;
+        }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v(LOG_TAG, "onDestroy");
     }
 
     @Override
