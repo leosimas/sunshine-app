@@ -157,7 +157,7 @@ public class DetailFragment extends Fragment {
                 // Read weather condition ID from cursor
                 int weatherId = cursor.getInt(COL_WEATHER_CONDITION_ID);
                 // Use placeholder Image
-                mIconView.setImageResource(R.mipmap.ic_launcher);
+                mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
                 // Read date from cursor and update views for day of week and date
                 long date = cursor.getLong(COL_WEATHER_DATE);
