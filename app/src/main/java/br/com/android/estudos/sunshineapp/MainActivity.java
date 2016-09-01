@@ -3,13 +3,14 @@ package br.com.android.estudos.sunshineapp;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -54,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
         if ( ! mLocation.equals( preferredLocation ) ) {
             ForecastFragment forecastFragment = (ForecastFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
             forecastFragment.onLocationChanged();
+
+            if (mTwoPane) {
+                DetailFragment detailFragment = (DetailFragment) this.getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+                detailFragment.onLocationChanged(preferredLocation);
+            }
+
             mLocation = preferredLocation;
         }
 
@@ -96,5 +103,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(Uri dateUri) {
+        if (mTwoPane) {
+            DetailFragment detailFragment = DetailFragment.newInstance( dateUri );
+            this.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.weather_detail_container, detailFragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .setData(dateUri);
+            startActivity(intent);
+        }
     }
 }

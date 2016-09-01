@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -111,10 +112,7 @@ public class ForecastFragment extends Fragment {
         // inflating view:
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
 
-        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0 );
-
         ListView listView = (ListView) view.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -123,14 +121,18 @@ public class ForecastFragment extends Fragment {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(i);
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+
+                    Callback callback = (Callback) getActivity();
+                    callback.onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
                                     locationSetting, cursor.getLong(COL_WEATHER_DATE)
                             ));
-                    startActivity(intent);
+
                 }
             }
         });
+
+        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0 );
+        listView.setAdapter(mForecastAdapter);
 
         return view;
     }
@@ -144,9 +146,8 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(LOADER_ID, null, mLoaderCallbacks);
         super.onActivityCreated(savedInstanceState);
-
-        getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, mLoaderCallbacks);
     }
 
     @Override
@@ -194,6 +195,19 @@ public class ForecastFragment extends Fragment {
     public void onLocationChanged() {
         this.updateWeather();
         getLoaderManager().restartLoader(LOADER_ID, null, mLoaderCallbacks);
+    }
+
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri dateUri);
     }
 
 }
