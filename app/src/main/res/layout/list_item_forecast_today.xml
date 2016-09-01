@@ -3,9 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_normal"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:background="@drawable/touch_selector"
+    android:background="@drawable/touch_selector_today"
     android:gravity="center_vertical"
     >
 
@@ -13,8 +12,9 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:orientation="vertical"
+        android:layout_marginLeft="60dp"
         >
 
         <TextView
@@ -22,8 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Medium Text"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/white"
             />
 
         <TextView
@@ -31,8 +33,10 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="28"
+            android:textColor="@color/white"
+            android:textSize="72sp"
+            android:fontFamily="sans-serif-light"
             />
 
         <TextView
@@ -40,8 +44,10 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="22"
+            android:textSize="36sp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/white"
             />
 
     </LinearLayout>
@@ -65,7 +71,9 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/white"
             />
 
     </LinearLayout>
