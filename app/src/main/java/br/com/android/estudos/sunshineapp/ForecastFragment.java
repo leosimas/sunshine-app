@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -84,9 +85,15 @@ public class ForecastFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             mForecastAdapter.swapCursor(data);
-            if ( mPosition != ListView.INVALID_POSITION ) {
-                mListView.smoothScrollToPosition( mPosition );
-            }
+            updateSelectedItem();
+
+            // cant do this on 'onLoadFinished', why?
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    showDetails((Cursor) mForecastAdapter.getItem(mPosition));
+                }
+            });
         }
 
         @Override
@@ -123,14 +130,7 @@ public class ForecastFragment extends Fragment {
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
-                    String locationSetting = Utility.getPreferredLocation(getActivity());
-
-                    Callback callback = (Callback) getActivity();
-                    callback.onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-                            ));
-                }
+                showDetails(cursor);
                 mPosition = position;
             }
         });
@@ -142,10 +142,30 @@ public class ForecastFragment extends Fragment {
         if ( savedInstanceState != null && savedInstanceState.containsKey(KEY_SELECTED_POSITION) ) {
             mPosition = savedInstanceState.getInt(KEY_SELECTED_POSITION);
         } else {
-            mPosition = ListView.INVALID_POSITION;
+            mPosition = 0;
         }
 
+        this.updateSelectedItem();
+
         return view;
+    }
+
+    private void showDetails(Cursor cursor) {
+        if (cursor != null) {
+            String locationSetting = Utility.getPreferredLocation(getActivity());
+
+            Callback callback = (Callback) getActivity();
+            callback.onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+                            locationSetting, cursor.getLong(COL_WEATHER_DATE)
+                    ));
+        }
+    }
+
+    private void updateSelectedItem() {
+        if ( mPosition != ListView.INVALID_POSITION ) {
+            mListView.setItemChecked(mPosition, true);
+            mListView.smoothScrollToPosition( mPosition );
+        }
     }
 
     @Override
@@ -215,7 +235,6 @@ public class ForecastFragment extends Fragment {
             this.mForecastAdapter.setUseTodayLayout( useTodayLayout );
         }
     }
-
 
     /**
      * A callback interface that all activities containing this fragment must

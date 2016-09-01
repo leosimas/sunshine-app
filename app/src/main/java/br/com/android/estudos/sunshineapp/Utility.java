@@ -69,14 +69,15 @@ public class Utility  {
 
         // If the date we're building the String for is today's date, the format
         // is "Today, June 24"
-        if (julianDay == currentJulianDay) {
-            String today = context.getString(R.string.today);
-            int formatId = R.string.format_full_friendly_date;
-            return String.format(context.getString(
-                    formatId,
-                    today,
-                    getFormattedMonthDay(context, dateInMillis)));
-        } else if ( julianDay < currentJulianDay + 7 ) {
+//        if (julianDay == currentJulianDay) {
+//            String today = context.getString(R.string.today);
+//            int formatId = R.string.format_full_friendly_date;
+//            return String.format(context.getString(
+//                    formatId,
+//                    today,
+//                    getFormattedMonthDay(context, dateInMillis)));
+//        } else
+        if ( julianDay <= currentJulianDay + 7 ) {
             // If the input date is less than a week in the future, just return the day name.
             return getDayName(context, dateInMillis);
         } else {
