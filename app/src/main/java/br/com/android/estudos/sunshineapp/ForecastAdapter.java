@@ -38,9 +38,9 @@ public class ForecastAdapter extends CursorAdapter {
 
         final int resLayout;
         if ( viewType == VIEW_TYPE_TODAY ) {
-            resLayout = R.layout.list_item_forecast;
-        } else {
             resLayout = R.layout.list_item_forecast_today;
+        } else {
+            resLayout = R.layout.list_item_forecast;
         }
 
         View view = LayoutInflater.from(context).inflate( resLayout, parent, false );

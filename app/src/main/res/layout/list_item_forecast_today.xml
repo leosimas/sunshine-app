@@ -6,6 +6,7 @@
     android:padding="@dimen/padding_normal"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:background="@drawable/touch_selector"
+    android:gravity="center_vertical"
     >
 
     <LinearLayout
