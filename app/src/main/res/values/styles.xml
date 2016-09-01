@@ -26,4 +26,8 @@
         <item name="android:choiceMode">none</item>
     </style>
 
+    <!-- Settings activity theme. -->
+    <style name="SettingsTheme" parent="AppTheme">
+    </style>
+
 </resources>
