@@ -1,5 +1,6 @@
 <!-- Master layout. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,12 +22,21 @@
             <TextView
                 android:id="@+id/detail_day_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="24sp"
+                tools:text="today"
+                />
 
             <TextView
                 android:id="@+id/detail_date_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="20sp"
+                android:textColor="@color/grey_light"
+                tools:text="june 22"
+                />
 
         </LinearLayout>
 
@@ -39,29 +49,46 @@
             <TextView
                 android:id="@+id/detail_high_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="96sp"
+                android:fontFamily="sans-serif-light"
+                tools:text="24"
+                />
 
             <TextView
                 android:id="@+id/detail_low_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:textSize="48sp"
+                android:layout_marginBottom="16dp"
+                tools:text="19"
+                />
 
             <!-- Humidity, wind, pressure -->
             <TextView
                 android:id="@+id/detail_humidity_textview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                style="@style/textWeatherDetailStyle"
+                tools:text="Humidity"
+                />
 
             <TextView
                 android:id="@+id/detail_wind_textview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                style="@style/textWeatherDetailStyle"
+                tools:text="Humidity"
+                />
 
             <TextView
                 android:id="@+id/detail_pressure_textview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                style="@style/textWeatherDetailStyle"
+                tools:text="Humidity"
+                />
 
         </LinearLayout>
 
@@ -74,13 +101,20 @@
 
             <ImageView
                 android:id="@+id/detail_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="144dp"
+                android:layout_height="144dp"
+                tools:src="@drawable/art_clear"
+                />
 
             <TextView
                 android:id="@+id/detail_forecast_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_light"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="22sp"
+                tools:text="Clear"
+                />
 
         </LinearLayout>
 

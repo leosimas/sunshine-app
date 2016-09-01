@@ -84,7 +84,7 @@ public class ForecastFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             mForecastAdapter.swapCursor(data);
-            if (mForecastAdapter.getCount() > 1) {
+            if ( mPosition != ListView.INVALID_POSITION ) {
                 mListView.smoothScrollToPosition( mPosition );
             }
         }
@@ -130,12 +130,14 @@ public class ForecastFragment extends Fragment {
                     callback.onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
                                     locationSetting, cursor.getLong(COL_WEATHER_DATE)
                             ));
-
-                    mPosition = position;
-
                 }
+                mPosition = position;
             }
         });
+
+        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0 );
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        mListView.setAdapter(mForecastAdapter);
 
         if ( savedInstanceState != null && savedInstanceState.containsKey(KEY_SELECTED_POSITION) ) {
             mPosition = savedInstanceState.getInt(KEY_SELECTED_POSITION);
@@ -143,18 +145,7 @@ public class ForecastFragment extends Fragment {
             mPosition = ListView.INVALID_POSITION;
         }
 
-        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0 );
-        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
-        mListView.setAdapter(mForecastAdapter);
-
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        this.updateWeather();
     }
 
     @Override
