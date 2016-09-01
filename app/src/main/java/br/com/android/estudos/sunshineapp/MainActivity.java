@@ -3,7 +3,6 @@ package br.com.android.estudos.sunshineapp;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -44,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         } else {
             mTwoPane = false;
         }
+
+        ForecastFragment forecastFragment = (ForecastFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+        forecastFragment.setUseTodayLayout(!mTwoPane);
 
     }
 

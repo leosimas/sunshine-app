@@ -97,6 +97,7 @@ public class ForecastFragment extends Fragment {
 
     private int mPosition;
     private ListView mListView;
+    private boolean mUseTodayLayout;
 
     public ForecastFragment() {
     }
@@ -143,6 +144,7 @@ public class ForecastFragment extends Fragment {
         }
 
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0 );
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
         mListView.setAdapter(mForecastAdapter);
 
         return view;
@@ -214,6 +216,13 @@ public class ForecastFragment extends Fragment {
     public void onLocationChanged() {
         this.updateWeather();
         getLoaderManager().restartLoader(LOADER_ID, null, mLoaderCallbacks);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        this.mUseTodayLayout = useTodayLayout;
+        if ( this.mForecastAdapter != null ) {
+            this.mForecastAdapter.setUseTodayLayout( useTodayLayout );
+        }
     }
 
 
