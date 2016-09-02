@@ -451,6 +451,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void notifyWeather() {
         Context context = getContext();
+
+        boolean notificationsEnabled = Utility.getNotificationsEnabled(context);
+        Log.d(LOG_TAG, "notificationsEnabled = " + notificationsEnabled);
+        if ( ! notificationsEnabled ) {
+            return;
+        }
+
         //checking the last update and notify if it' the first of the day
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String lastNotificationKey = context.getString(R.string.pref_last_notification);

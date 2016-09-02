@@ -73,5 +73,10 @@
     <string name="format_notification">
     Forecast: <xliff:g id="condition">%1$s</xliff:g> High: <xliff:g id="high">%2$s</xliff:g> Low: <xliff:g id="low">%3$s</xliff:g>
     </string>
+    <string name="pref_notify_key" translatable="false">notify</string>
+    <string name="pref_notify_title">Notifications</string>
+    <string name="pref_notify_on">enabled</string>
+    <string name="pref_notify_off">disabled</string>
+    <string name="pref_notify_default" translatable="false">true</string>
 
 </resources>

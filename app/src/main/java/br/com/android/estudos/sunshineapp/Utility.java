@@ -3,6 +3,7 @@ package br.com.android.estudos.sunshineapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.BoringLayout;
 import android.text.format.Time;
 
 import java.text.DateFormat;
@@ -18,6 +19,12 @@ public class Utility  {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),
                 context.getString(R.string.pref_location_detault));
+    }
+
+    public static boolean getNotificationsEnabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(context.getString(R.string.pref_notify_key),
+                Boolean.parseBoolean( context.getString(R.string.pref_notify_default) ));
     }
 
     public static boolean isMetric(Context context) {
