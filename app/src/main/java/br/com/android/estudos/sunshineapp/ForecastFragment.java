@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import br.com.android.estudos.sunshineapp.data.WeatherContract;
+import br.com.android.estudos.sunshineapp.service.SunshineService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -221,7 +222,10 @@ public class ForecastFragment extends Fragment {
 
     private void updateWeather() {
         final String location = Utility.getPreferredLocation(getActivity());
-        new FetchWeatherTask(getActivity()).execute( location );
+        Intent intent = new Intent( getActivity(), SunshineService.class )
+            .putExtra(SunshineService.EXTRA_LOCATION, location);
+
+        getActivity().startService( intent );
     }
 
     public void onLocationChanged() {

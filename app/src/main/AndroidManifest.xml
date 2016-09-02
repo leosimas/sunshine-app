@@ -44,6 +44,11 @@
             android:authorities="br.com.android.estudos.sunshineapp"
             android:name=".data.WeatherProvider" />
 
+        <service
+            android:name=".service.SunshineService"
+            android:exported="false"
+            />
+
     </application>
 
 </manifest>
