@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import br.com.android.estudos.sunshineapp.sync.SunshineSyncAdapter;
+
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 
         ForecastFragment forecastFragment = (ForecastFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
         forecastFragment.setUseTodayLayout(!mTwoPane);
+
+        SunshineSyncAdapter.initializeSyncAdapter(this);
 
     }
 

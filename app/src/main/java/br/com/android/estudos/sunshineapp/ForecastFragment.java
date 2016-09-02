@@ -227,6 +227,8 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
+        SunshineSyncAdapter.syncImmediately( this.getActivity() );
+
 //        final String location = Utility.getPreferredLocation(getActivity());
 //
 //        Intent intent = new Intent(getActivity(), SunshineService.AlarmReceiver.class)
@@ -237,8 +239,6 @@ public class ForecastFragment extends Fragment {
 //
 //        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 //        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-
-        SunshineSyncAdapter.syncImmediately(this.getActivity());
 
     }
 
