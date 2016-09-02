@@ -4,12 +4,6 @@
     tools:context="br.com.android.estudos.sunshineapp.MainActivity">
 
     <item
-        android:id="@+id/action_view_map"
-        android:orderInCategory="100"
-        android:title="@string/action_view_map"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

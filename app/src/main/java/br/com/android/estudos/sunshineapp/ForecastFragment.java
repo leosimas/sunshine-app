@@ -198,32 +198,49 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         switch (id) {
-            case R.id.action_refresh:
-                this.updateWeather();
-                return true;
-
             case R.id.action_settings:
                 this.startActivity( new Intent(getActivity(), SettingsActivity.class) );
                 return true;
 
             case R.id.action_view_map:
-                final String location = Utility.getPreferredLocation(getActivity());
-
-                Uri uri = Uri.parse( "geo:0,0?q=" + TextUtils.htmlEncode( location ) );
-                Intent intent = new Intent( Intent.ACTION_VIEW );
-                intent.setData( uri );
-
-                if ( intent.resolveActivity( getActivity().getPackageManager() ) != null ) {
-                    this.startActivity(intent);
-                } else {
-                    final String errorMsg = getString( R.string.error_map_intent_not_found );
-                    Toast.makeText(ForecastFragment.this.getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                }
-
+                this.openMapLocation();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openMapLocation() {
+//                final String location = Utility.getPreferredLocation(getActivity());
+//                Uri uri = Uri.parse( "geo:0,0?q=" + TextUtils.htmlEncode( location ) );
+
+        if ( mForecastAdapter == null ) {
+            return;
+        }
+
+        Cursor cursor = mForecastAdapter.getCursor();
+        if (cursor == null) {
+            return;
+        }
+
+        if ( !cursor.moveToFirst() ) {
+            return;
+        }
+
+        final Double lat = cursor.getDouble(COL_COORD_LAT);
+        final Double lon = cursor.getDouble(COL_COORD_LONG);
+
+        Uri uri = Uri.parse( "geo:" + lat + "," + lon );
+
+        Intent intent = new Intent( Intent.ACTION_VIEW );
+        intent.setData( uri );
+
+        if ( intent.resolveActivity( getActivity().getPackageManager() ) != null ) {
+            this.startActivity(intent);
+        } else {
+            final String errorMsg = getString( R.string.error_map_intent_not_found );
+            Toast.makeText(ForecastFragment.this.getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateWeather() {

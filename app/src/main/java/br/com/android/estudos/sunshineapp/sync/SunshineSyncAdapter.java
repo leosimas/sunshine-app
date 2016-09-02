@@ -35,8 +35,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Vector;
 
 import br.com.android.estudos.sunshineapp.MainActivity;
@@ -48,7 +46,7 @@ import br.com.android.estudos.sunshineapp.data.WeatherContract;
 public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     public final static String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
 
-    public static final int SYNC_INTERVAL = 30;// 60 * 180;
+    public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
 
     private static final String[] NOTIFY_WEATHER_PROJECTION = new String[] {
