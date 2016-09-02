@@ -28,6 +28,7 @@ import java.util.Date;
 
 import br.com.android.estudos.sunshineapp.data.WeatherContract;
 import br.com.android.estudos.sunshineapp.service.SunshineService;
+import br.com.android.estudos.sunshineapp.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -94,12 +95,12 @@ public class ForecastFragment extends Fragment {
             updateSelectedItem();
 
             // cant do this on 'onLoadFinished', why?
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    showDetails((Cursor) mForecastAdapter.getItem(mPosition));
-                }
-            });
+//            new Handler().post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    showDetails((Cursor) mForecastAdapter.getItem(mPosition));
+//                }
+//            });
         }
 
         @Override
@@ -226,16 +227,19 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        final String location = Utility.getPreferredLocation(getActivity());
+//        final String location = Utility.getPreferredLocation(getActivity());
+//
+//        Intent intent = new Intent(getActivity(), SunshineService.AlarmReceiver.class)
+//                .putExtra(SunshineService.EXTRA_LOCATION, location);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//
+//        long triggerTime = System.currentTimeMillis() + 5 * 1000;
+//
+//        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
 
-        Intent intent = new Intent(getActivity(), SunshineService.AlarmReceiver.class)
-                .putExtra(SunshineService.EXTRA_LOCATION, location);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        SunshineSyncAdapter.syncImmediately(this.getActivity());
 
-        long triggerTime = System.currentTimeMillis() + 5 * 1000;
-
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
     }
 
     public void onLocationChanged() {
