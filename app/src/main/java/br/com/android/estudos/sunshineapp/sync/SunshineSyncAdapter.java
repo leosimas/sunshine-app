@@ -37,9 +37,7 @@ import br.com.android.estudos.sunshineapp.data.WeatherContract;
 public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     public final static String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
 
-    // Interval at which to sync with the weather, in milliseconds.
-    // 60 seconds (1 minute)  180 = 3 hours
-    public static final int SYNC_INTERVAL = 30 * 1000; // 60 * 180;
+    public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
 
     public SunshineSyncAdapter(Context context, boolean autoInitialize) {
