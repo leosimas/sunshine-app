@@ -35,6 +35,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
 
 import br.com.android.estudos.sunshineapp.MainActivity;
@@ -89,7 +91,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     private static void onAccountCreated(Account newAccount, Context context) {
-        Log.d(LOG_TAG, "onAccountCreated");
         /*
          * Since we've created an account
          */
@@ -107,13 +108,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public static void initializeSyncAdapter(Context context) {
-        Log.d(LOG_TAG, "initializeSyncAdapter");
         getSyncAccount(context);
     }
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.d(LOG_TAG, "onPerformSync Called.");
 
 //        String location = intent.getStringExtra(EXTRA_LOCATION);
         final String location = Utility.getPreferredLocation(this.getContext());
@@ -305,7 +304,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
 
             // Insert the new weather information into the database
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
+            Vector<ContentValues> cVVector = new Vector<>(weatherArray.length());
 
             // OWM returns daily forecasts based upon the local time of the city that is being
             // asked for, which means that we need to know the GMT offset to translate this data
@@ -389,6 +388,15 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 notifyWeather();
             }
 
+            // delete old data:
+            final long yesterday = dayTime.setJulianDay(julianStartDay - 1);
+
+            this.getContext().getContentResolver().delete(
+                    WeatherContract.WeatherEntry.CONTENT_URI,
+                    WeatherContract.WeatherEntry.COLUMN_DATE + " <= ?",
+                    new String[]{ Long.toString( yesterday ) }
+                );
+
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -401,7 +409,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param context The context used to access the account service
      */
     public static void syncImmediately(Context context) {
-        Log.d(LOG_TAG, "syncImmediately");
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -418,7 +425,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
      * @return a fake account.
      */
     public static Account getSyncAccount(Context context) {
-        Log.d(LOG_TAG, "getSyncAccount");
         // Get an instance of the Android account manager
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
@@ -453,7 +459,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         Context context = getContext();
 
         boolean notificationsEnabled = Utility.getNotificationsEnabled(context);
-        Log.d(LOG_TAG, "notificationsEnabled = " + notificationsEnabled);
         if ( ! notificationsEnabled ) {
             return;
         }
