@@ -1,9 +1,11 @@
 package br.com.android.estudos.sunshineapp.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
@@ -309,7 +311,7 @@ public class SunshineService extends IntentService {
                 ContentValues cVArray[] = new ContentValues[cVVector.size()];
                 cVArray = cVVector.toArray(cVArray);
                 int inserted = this.getContentResolver().bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, cVArray);
-                Log.d(LOG_TAG, "FetchWeatherTask Complete. " + inserted + " Inserted");
+                Log.d(LOG_TAG, "SunshineService complete. " + inserted + " Inserted");
             }
 
         } catch (JSONException e) {
@@ -317,5 +319,19 @@ public class SunshineService extends IntentService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver {
+
+        public static final String LOG_TAG = AlarmReceiver.class.getSimpleName();
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(LOG_TAG, "onReceive");
+
+            Intent sendIntent = new Intent(context, SunshineService.class)
+                    .putExtra(EXTRA_LOCATION, intent.getStringExtra(EXTRA_LOCATION));
+            context.startService(sendIntent);
+        }
     }
 }

@@ -1,5 +1,8 @@
 package br.com.android.estudos.sunshineapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,6 +23,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.Date;
 
 import br.com.android.estudos.sunshineapp.data.WeatherContract;
 import br.com.android.estudos.sunshineapp.service.SunshineService;
@@ -152,7 +157,7 @@ public class ForecastFragment extends Fragment {
     }
 
     private void showDetails(Cursor cursor) {
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             String locationSetting = Utility.getPreferredLocation(getActivity());
 
             Callback callback = (Callback) getActivity();
@@ -222,10 +227,15 @@ public class ForecastFragment extends Fragment {
 
     private void updateWeather() {
         final String location = Utility.getPreferredLocation(getActivity());
-        Intent intent = new Intent( getActivity(), SunshineService.class )
-            .putExtra(SunshineService.EXTRA_LOCATION, location);
 
-        getActivity().startService( intent );
+        Intent intent = new Intent(getActivity(), SunshineService.AlarmReceiver.class)
+                .putExtra(SunshineService.EXTRA_LOCATION, location);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        long triggerTime = System.currentTimeMillis() + 5 * 1000;
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
     }
 
     public void onLocationChanged() {
