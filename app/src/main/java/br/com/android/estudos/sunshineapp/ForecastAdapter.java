@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 /**
  * Created by sosucesso on 8/28/16.
  */
@@ -62,12 +64,16 @@ public class ForecastAdapter extends CursorAdapter {
         final int iconRes;
         if ( getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY ) {
             iconRes = Utility.getArtResourceForWeatherCondition(weatherId);
+            Glide.with(context)
+                    .load( iconRes )
+                    .error( Utility.getArtResourceForWeatherCondition(weatherId) )
+                    .into(viewHolder.iconView);
+
         } else {
             iconRes = Utility.getIconResourceForWeatherCondition(weatherId);
+            viewHolder.iconView.setImageResource(iconRes);
         }
 
-        // Use placeholder image for now
-        viewHolder.iconView.setImageResource(iconRes);
 
         // Read date from cursor
         long dateInMillis = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);

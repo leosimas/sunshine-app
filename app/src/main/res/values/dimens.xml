@@ -5,4 +5,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="notification_large_icon_default">48dp</dimen>
 </resources>
