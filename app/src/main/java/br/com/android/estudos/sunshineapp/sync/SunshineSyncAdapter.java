@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
@@ -33,6 +34,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
@@ -44,6 +47,18 @@ import br.com.android.estudos.sunshineapp.data.WeatherContract;
 
 
 public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({LOCATION_STATUS_OK, LOCATION_STATUS_SERVER_DOWN, LOCATION_STATUS_SERVER_INVALID,
+            LOCATION_STATUS_UNKNOWN, LOCATION_STATUS_INVALID})
+    public @interface LocationStatus {}
+    public static final int LOCATION_STATUS_OK = 0;
+    public static final int LOCATION_STATUS_SERVER_DOWN = 1;
+    public static final int LOCATION_STATUS_SERVER_INVALID = 2;
+    public static final int LOCATION_STATUS_UNKNOWN = 3;
+    public static final int LOCATION_STATUS_INVALID = 4;
+
+
     public final static String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
 
     public static final int SYNC_INTERVAL = 60 * 180;
@@ -154,23 +169,22 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
+                Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_SERVER_DOWN);
                 return;
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
+            StringBuilder buffer = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
-                buffer.append(line).append("\n");
+                buffer.append(line);
             }
 
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
+                Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_SERVER_DOWN);
                 return;
             }
             forecastJsonStr = buffer.toString();
@@ -178,6 +192,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
             // to parse it.
+            Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_SERVER_DOWN);
             return;
         } finally {
             if (urlConnection != null) {
@@ -194,9 +209,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             getWeatherDataFromJson(forecastJsonStr, location);
+
+            Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_OK);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
+            Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_SERVER_INVALID);
         }
 
     }
@@ -288,8 +305,26 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         final String OWM_DESCRIPTION = "main";
         final String OWM_WEATHER_ID = "id";
 
+        final String OWM_RESPONSE_CODE = "cod";
+
         try {
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
+
+            if ( forecastJson.has(OWM_RESPONSE_CODE) ) {
+                final int code = forecastJson.getInt( OWM_RESPONSE_CODE );
+                switch (code) {
+                    case HttpURLConnection.HTTP_OK:
+                        break;
+                    case HttpURLConnection.HTTP_NOT_FOUND:
+                        Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_INVALID);
+                        return null;
+                    default:
+                        Utility.setLocationStatus(this.getContext(), LOCATION_STATUS_SERVER_DOWN);
+                        return null;
+                }
+            }
+
+
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
 
             JSONObject cityJson = forecastJson.getJSONObject(OWM_CITY);

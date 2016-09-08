@@ -2,6 +2,7 @@ package br.com.android.estudos.sunshineapp;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -10,13 +11,14 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
+import br.com.android.estudos.sunshineapp.data.WeatherContract;
 import br.com.android.estudos.sunshineapp.sync.SunshineSyncAdapter;
 
 /**
  * Created by Dustin on 25/08/2016.
  */
 public class SettingsActivity extends PreferenceActivity
-        implements Preference.OnPreferenceChangeListener {
+        implements Preference.OnPreferenceChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,6 @@ public class SettingsActivity extends PreferenceActivity
         } else {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
-            SunshineSyncAdapter.syncImmediately(this);
         }
         return true;
     }
@@ -73,4 +74,13 @@ public class SettingsActivity extends PreferenceActivity
         return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if ( key.equals( getString(R.string.pref_location_status_key) ) ) {
+            Utility.resetLocationStatus(this);
+            SunshineSyncAdapter.syncImmediately(this);
+        } else if ( key.equals(getString(R.string.pref_units_key)) ) {
+            getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+        }
+    }
 }

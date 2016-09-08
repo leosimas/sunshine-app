@@ -2,7 +2,10 @@ package br.com.android.estudos.sunshineapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.text.BoringLayout;
 import android.text.format.Time;
 
@@ -10,10 +13,34 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import br.com.android.estudos.sunshineapp.sync.SunshineSyncAdapter;
+
 /**
  * Created by sosucesso on 8/28/16.
  */
 public class Utility  {
+
+    @SuppressWarnings("ResourceType")
+    public static @SunshineSyncAdapter.LocationStatus int getLocationStatus(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(context.getString(R.string.pref_location_status_key),
+                SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+
+    public static void setLocationStatus(Context context, @SunshineSyncAdapter.LocationStatus int status) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit()
+                .putInt(context.getString(R.string.pref_location_status_key), status)
+            .commit();
+    }
+
+    public static void resetLocationStatus(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit()
+                .putInt(context.getString(R.string.pref_location_status_key),
+                        SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN)
+                .apply();
+    }
 
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -240,6 +267,13 @@ public class Utility  {
             return R.drawable.art_clouds;
         }
         return -1;
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
 }

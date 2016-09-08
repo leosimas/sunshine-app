@@ -78,5 +78,12 @@
     <string name="pref_notify_on">enabled</string>
     <string name="pref_notify_off">disabled</string>
     <string name="pref_notify_default" translatable="false">true</string>
+    <string name="pref_location_status_key">location_status</string>
+
+    <string name="empty_forecast_list">No Weather Information Available</string>
+    <string name="empty_forecast_list_no_network">No weather information available. The network is not available to fetch weather data.</string>
+    <string name="empty_forecast_list_server_down">No weather information available. The server is not returning data.</string>
+    <string name="empty_forecast_list_server_error">No weather information available. The server is not returning valid data. Please check for an updated version of Sunshine.</string>
+    <string name="empty_forecast_list_invalid_location">No weather information available. The location in settings is not recognized by the weather server.</string>
 
 </resources>

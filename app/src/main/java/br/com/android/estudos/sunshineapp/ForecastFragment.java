@@ -1,19 +1,17 @@
 package br.com.android.estudos.sunshineapp;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,18 +20,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Date;
-
 import br.com.android.estudos.sunshineapp.data.WeatherContract;
-import br.com.android.estudos.sunshineapp.service.SunshineService;
 import br.com.android.estudos.sunshineapp.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ForecastFragment extends Fragment {
+public class ForecastFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private static final int LOADER_ID = 100;
@@ -92,6 +88,11 @@ public class ForecastFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             mForecastAdapter.swapCursor(data);
+            if ( data.getCount() == 0 ) {
+                updateEmptyView();
+                return;
+            }
+
             updateSelectedItem();
 
             // cant do this on 'onLoadFinished', why?
@@ -109,9 +110,36 @@ public class ForecastFragment extends Fragment {
         }
     };
 
+    private void updateEmptyView() {
+        if ( mForecastAdapter.getCount() == 0 ) {
+            return;
+        }
+
+        Context context = this.getActivity();
+        final int status = Utility.getLocationStatus(context);
+        int resText = R.string.empty_forecast_list;
+        switch (status) {
+            case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                resText = R.string.empty_forecast_list_server_down;
+                break;
+            case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                resText = R.string.empty_forecast_list_server_error;
+                break;
+            case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
+                resText = R.string.empty_forecast_list_invalid_location;
+                break;
+            default:
+                if ( ! Utility.isNetworkAvailable(context) ) {
+                    resText = R.string.empty_forecast_list_no_network;
+                }
+        }
+        mTextEmptyList.setText(resText);
+    }
+
     private int mPosition;
     private ListView mListView;
     private boolean mUseTodayLayout;
+    private TextView mTextEmptyList;
 
     public ForecastFragment() {
     }
@@ -141,6 +169,8 @@ public class ForecastFragment extends Fragment {
                 mPosition = position;
             }
         });
+        mTextEmptyList = (TextView) view.findViewById(R.id.text_empty_list);
+        mListView.setEmptyView( mTextEmptyList );
 
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0 );
         mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
@@ -268,6 +298,27 @@ public class ForecastFragment extends Fragment {
         this.mUseTodayLayout = useTodayLayout;
         if ( this.mForecastAdapter != null ) {
             this.mForecastAdapter.setUseTodayLayout( useTodayLayout );
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_location_status_key))) {
+            this.updateEmptyView();
         }
     }
 
