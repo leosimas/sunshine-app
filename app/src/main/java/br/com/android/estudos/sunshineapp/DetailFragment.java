@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import br.com.android.estudos.sunshineapp.data.WeatherContract;
 import br.com.android.estudos.sunshineapp.data.WeatherContract.WeatherEntry;
 
@@ -185,7 +187,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // Read weather condition ID from cursor
         int weatherId = cursor.getInt(COL_WEATHER_CONDITION_ID);
         // Use placeholder Image
-        mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+//        mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+        Glide.with(this)
+                .load( Utility.getArtUrlForWeatherCondition(getActivity(), weatherId) )
+                .error( Utility.getArtResourceForWeatherCondition(weatherId) )
+                .into(mIconView);
 
         // Read date from cursor and update views for day of week and date
         long date = cursor.getLong(COL_WEATHER_DATE);
