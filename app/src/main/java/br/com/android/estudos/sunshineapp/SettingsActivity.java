@@ -51,7 +51,8 @@ public class SettingsActivity extends PreferenceActivity
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
-        String stringValue = value.toString();
+        final String stringValue = value.toString();
+        final String key = preference.getKey();
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
@@ -61,6 +62,20 @@ public class SettingsActivity extends PreferenceActivity
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
+        } else if (key.equals(getString(R.string.pref_location_key))) {
+            final int status = Utility.getLocationStatus(this);
+            final String newSummary;
+            switch (status) {
+                case SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN:
+                    newSummary = getString(R.string.pref_location_unknown_description, stringValue);
+                    break;
+                case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
+                    newSummary = getString(R.string.pref_location_error_description, stringValue);
+                    break;
+                default:
+                    newSummary = stringValue;
+            }
+            preference.setSummary( newSummary );
         } else {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
@@ -75,12 +90,26 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if ( key.equals( getString(R.string.pref_location_status_key) ) ) {
             Utility.resetLocationStatus(this);
             SunshineSyncAdapter.syncImmediately(this);
         } else if ( key.equals(getString(R.string.pref_units_key)) ) {
             getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 }
