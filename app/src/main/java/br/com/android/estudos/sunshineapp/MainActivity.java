@@ -5,11 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import br.com.android.estudos.sunshineapp.sync.SunshineSyncAdapter;
 
@@ -27,8 +27,10 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
+
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
         ViewCompat.setElevation(appBarLayout, 0f);

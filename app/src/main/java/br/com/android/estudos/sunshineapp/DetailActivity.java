@@ -2,6 +2,7 @@ package br.com.android.estudos.sunshineapp;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -14,7 +15,8 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
             Uri uri = getIntent().getData();
