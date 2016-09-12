@@ -6,4 +6,5 @@
     <dimen name="padding_normal">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="notification_large_icon_default">48dp</dimen>
+    <dimen name="today_icon">96dp</dimen>
 </resources>
