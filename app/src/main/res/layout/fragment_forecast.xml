@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".ForecastFragment"
     tools:showIn="@layout/activity_main">
-
+    
     <ListView
         android:id="@+id/listview_forecast"
         android:layout_width="match_parent"
