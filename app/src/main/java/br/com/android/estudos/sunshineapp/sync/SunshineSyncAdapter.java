@@ -574,7 +574,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                         .setLargeIcon( largeIcon )
                         .setContentText(contentText)
                         .setContentTitle(title)
-                        .setContentIntent(pendingIntent)    
+                        .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
                         .build();
 

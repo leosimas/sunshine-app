@@ -7,5 +7,5 @@
     </item>
 
     <!-- Default, "just hangin' out" state. -->
-    <item android:drawable="@color/sunshine_blue" />
+    <item android:drawable="@color/colorPrimary" />
 </selector>
